@@ -1,4 +1,7 @@
 #include <vector>
+#include <cstdio>
+#include <sys/file.h>
+
 #include "rp_util.h"
 
 using std::cout;
@@ -119,6 +122,15 @@ void next_ws(){
 
 int main(int argc, char* argv[]){
 
+  FILE* lockfp = fopen(".rpmdlock", "w");
+
+  if(!lockfp){
+    cout << "Another instance of rpmd is running\n";
+    return 1;
+  }
+  
+  int lock = flock(fileno(lockfp), LOCK_EX);
+
   if(is_env("rpmd_n_ws")){
     // restore session
     
@@ -158,6 +170,8 @@ int main(int argc, char* argv[]){
     // call("addhook deletewindow exec rpmd dw");
   
   }
+
+  fclose(lockfp);
 
 }
 

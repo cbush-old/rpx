@@ -18,7 +18,6 @@ string trim(string s){
 
 }
 
-
 namespace ratpoison {
 
 string call(string const& cmd){
@@ -30,8 +29,7 @@ string call(string const& cmd){
   
   FILE* p = popen(ss.str().c_str(), "r");
 
-  if(p==NULL) 
-    throw BAD_PIPE;
+  if(p==NULL) throw BAD_PIPE;
 
   const size_t SIZE = 256;
   char buffer[SIZE];
@@ -42,8 +40,6 @@ string call(string const& cmd){
   }
 
   pclose(p);
-
-  cout << ss.str() << '\n';
 
   return trim(result);
 
