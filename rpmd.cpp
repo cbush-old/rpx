@@ -4,6 +4,8 @@
 
 #include "rp_util.h"
 
+char const * const LOCKFILE { ".rpmdlock" };
+
 using std::cout;
 using std::string;
 using std::vector;
@@ -122,7 +124,7 @@ void next_ws(){
 
 int main(int argc, char* argv[]){
 
-  FILE* lockfp = fopen(".rpmdlock", "w");
+  FILE* lockfp = fopen(LOCKFILE, "w");
 
   if(!lockfp){
     cout << "Another instance of rpmd is running\n";
@@ -172,6 +174,7 @@ int main(int argc, char* argv[]){
   }
 
   fclose(lockfp);
+  remove(LOCKFILE);
 
 }
 

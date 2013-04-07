@@ -80,5 +80,4 @@ void echo(string const& what){
   call(string("echo ") + what);
 }
 
-
 } // namespace ratpoison
