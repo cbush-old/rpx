@@ -56,26 +56,7 @@ void load_ws(unsigned i){
   
 }
 
-void delete_ws(){
-
-  call("gdelete");
-  
-  for(unsigned i = curr_ws + 1; i < n_ws; ++i){
-
-    call(num_on_str(i, "gselect rpmd_ws"));
-    call(num_on_str(i - 1, "grename rpmd_ws"));
-    
-    setenv(
-      num_on_str(i - 1, "rpmd_fdata_ws"), 
-      getenv(num_on_str(i, "rpmd_fdata_ws"))
-    );
-
-  }
-
-  setenv("rpmd_n_ws", --n_ws);
-  //unsetenv(num_on_str(n_ws, "rpmd_fdata_ws"));    
-  
-}
+void delete_ws();
 
 void prev_ws(){
   
@@ -117,9 +98,51 @@ void next_ws(){
   } else {    
     
     load_ws(curr_ws + 1);
-  
+
   }
 
+}
+
+void delete_ws(){
+
+  if(!group_is_empty()){
+    // Group must be empty
+    return;
+  }
+  
+  if(n_ws < 2){
+    // Can't delete only ws
+    return;
+  }
+  
+  if(curr_ws==0){
+    // "Can't delete home ws
+    return;
+  }
+  
+  call("grename rpmd_trash");
+  
+  for(unsigned i = curr_ws + 1; i < n_ws; ++i){
+
+    call(num_on_str(i, "gselect rpmd_ws"));
+    call(num_on_str(i - 1, "grename rpmd_ws"));
+
+    setenv(
+      num_on_str(i - 1, "rpmd_fdata_ws"), 
+      getenv(num_on_str(i, "rpmd_fdata_ws"))
+    );
+
+  }
+  
+  setenv("rpmd_n_ws", --n_ws);
+  
+  if(curr_ws==n_ws)
+    prev_ws();
+  else 
+    load_ws(curr_ws);
+  
+  call("gdelete rpmd_trash");
+  
 }
 
 int main(int argc, char* argv[]){
@@ -144,18 +167,8 @@ int main(int argc, char* argv[]){
     for(auto& arg : args){
       if(arg=="next") next_ws();
       else if(arg=="prev") prev_ws();
-      else if(arg=="delete"){
-        if(group_is_empty()){
-          if(n_ws > 1){
-            delete_ws();
-            load_ws(curr_ws);
-          } else {
-            echo("Can't delete only ws");
-          }
-        } else {
-          echo("Group must be empty");
-        }
-      }
+      else if(arg=="delete") delete_ws();
+  
     }
 
   } else {
