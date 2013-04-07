@@ -187,7 +187,7 @@ int main(int argc, char* argv[]){
   }
 
   fclose(lockfp);
-  remove(LOCKFILE);
+  // remove(LOCKFILE);
 
 }
 
