@@ -147,6 +147,11 @@ void delete_ws(){
 
 int main(int argc, char* argv[]){
 
+  if(argc==2 && string(argv[1])=="quit") {
+    remove(LOCKFILE);
+    return 0;
+  }
+
   FILE* lockfp = fopen(LOCKFILE, "w");
 
   if(!lockfp){
@@ -168,7 +173,7 @@ int main(int argc, char* argv[]){
       if(arg=="next") next_ws();
       else if(arg=="prev") prev_ws();
       else if(arg=="delete") delete_ws();
-  
+
     }
 
   } else {
@@ -183,11 +188,13 @@ int main(int argc, char* argv[]){
     
     // add a hook to close window event to update groups
     // call("addhook deletewindow exec rpmd dw");
+
+    // when exiting ratpoison...
+    call("addhook quit exec rpmd quit");
   
   }
 
   fclose(lockfp);
-  // remove(LOCKFILE);
 
 }
 

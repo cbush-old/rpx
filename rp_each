@@ -1,0 +1,37 @@
+#!/usr/bin/php
+<?php
+
+$argc > 1 or die;
+
+array_shift($argv);
+
+foreach($argv as &$arg)
+  $arg = "-c \"$arg\"";
+
+$args = implode(" ", $argv);
+
+
+$r = array();
+
+exec("ratpoison -c fdump -c curframe", $r);
+
+$fdata = $r[0];
+$current = $r[1];
+
+$nums = array();
+
+preg_match_all("/number ([0-9]+)/", $fdata, $nums);
+
+$nums = $nums[1];
+
+$k = array_search($current,$nums);
+unset($nums[$k]);
+$nums[] = $current;
+
+foreach($nums as $f){
+
+  $cmd = "-c \"fselect {$f}\" {$args} ";
+  exec("ratpoison {$cmd}");
+
+}
+
